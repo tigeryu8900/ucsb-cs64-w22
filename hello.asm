@@ -3,13 +3,15 @@
 #
 #  Data Area - allocate and initialize variables
 .data
-	# TODO: Write your string definitions here
+	msg: .asciiz "Hello World"
 
 #Text Area (i.e. instructions)
 .text
 main:
-
-	# TODO: Write your code here
+	li $v0, 4
+	la $a0, msg
+	syscall
 
 exit:
-	# Exit SPIM: Write your code here!
+	li $v0, 10
+	syscall
