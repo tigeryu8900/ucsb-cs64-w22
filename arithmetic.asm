@@ -20,6 +20,7 @@ main:
 	# or $a0 by 32 (same as add since the 5th bit of $a0 is 0)
 	ori $a0, $a0, 32
 	
+	# print $a0
 	li $v0, 1
 	syscall
 
