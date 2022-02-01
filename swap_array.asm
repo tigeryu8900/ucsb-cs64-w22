@@ -23,6 +23,8 @@ myArray:
     .word 29 17 27 20 25 22 23 24 21 26 19 28
 
 .text
+    j main
+
     # Print everything in the array (without use of a loop)
     # Used as a function/sub-routine
 
@@ -92,7 +94,7 @@ printArray:
     la $a0, comma
     syscall
 
-li $v0, 1
+    li $v0, 1
     lw $a0, 36($t0)
     syscall
     li $v0, 4
@@ -185,13 +187,12 @@ main_failed:
     syscall
 
 main_exit:
-    # TODO: Write code to properly exit a SPIM simulation
-
+    li  $v0, 10
+    syscall
 
 # COPYFROMHERE - DO NOT REMOVE THIS LINE
 
 doSwap:
-    # TODO: translate the following C code into MIPS
     # assembly here.
     # Use only regs $v0-$v1, $t0-$t7, $a0-$a3.
     # You may assume nothing about their starting values.
@@ -207,8 +208,19 @@ doSwap:
     # y+=2;
     # }
 
-
-    # TODO: fill in the code
+    la $t0, myArray
+    addiu $t1, $t0, 4
+    addiu $t2, $t0, 48
+    loop:
+        beq $t0, $t2, then
+        lw $t3, ($t0)
+        lw $t4, ($t1)
+        sw $t3, ($t1)
+        sw $t4, ($t0)
+        addiu $t0, $t0, 8
+        addiu $t1, $t1, 8
+        j loop
+    then:
 
     # do not remove this last line
     jr $ra
