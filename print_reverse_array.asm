@@ -8,8 +8,26 @@
     cout: .asciiz "The contents of the array in reverse order are:\n"
 
 .text
+j main
+
 printA:
-    # TODO: Write your function code here
+    sll $a1, $a1, 2
+    move $t0, $a0
+    addu $t1, $t0, $a1
+
+    loop:
+        addiu $t1, $t1, -4
+        li $v0, 1
+        lw $a0, ($t1)
+        syscall
+
+        li $v0, 11
+        li $a0, '\n'
+        syscall
+
+        bne $t0, $t1, loop
+    
+    jr $ra
 
 main:
     li $v0, 4
@@ -22,4 +40,5 @@ main:
     jal printA
 
 exit:
-    # TODO: Write code to properly exit a SPIM simulation
+    li $v0, 10
+    syscall
