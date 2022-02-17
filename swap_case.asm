@@ -81,9 +81,62 @@ Exit:
 
 # COPYFROMHERE - DO NOT REMOVE THIS LINE
 
-
 Swap_Case:
-    #TODO: write your code here, $a0 stores the address of the string
+    addiu $sp, $sp, -12
+    sw $ra, 0($sp)
+    sw $s0, 4($sp)
+    sw $s1, 8($sp)
+
+    move $s0, $a0
+
+    loop:
+        lb $t0, ($s0)
+        beqz $t0, end_loop
+
+        check_lower:
+            sltiu $t2, $t0, 'a'
+            bnez $t2, check_upper
+            sltiu $t2, $t0, 123 # 'z' + 1
+            beqz $t2, default
+
+            # $t0 is lowercase
+            addiu $t1, $t0, -32
+            j both
+
+        check_upper:
+            sltiu $t2, $t0, 'A'
+            bnez $t2, default
+            sltiu $t2, $t0, 91 # 'Z' + 1
+            beqz $t2, default
+
+            # $t0 is uppercase
+            addiu $t1, $t0, 32
+            j both
+
+        both:
+            move $a0, $t0
+            li $v0, 11
+            syscall
+            li $a0, '\n'
+            syscall
+            move $a0, $t1
+            syscall
+            li $a0, '\n'
+            syscall
+
+            sb $t1, ($s0)
+
+            jal ConventionCheck
+        default:
+
+        addiu $s0, $s0, 1
+        j loop
+    end_loop:
+
+    lw $ra, 0($sp)
+    lw $s0, 4($sp)
+    lw $s1, 8($sp)
+    addiu $sp, $sp, 12
 
     # Do not remove this line
     jr $ra
