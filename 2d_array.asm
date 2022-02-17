@@ -174,5 +174,65 @@ swap_rows: #takes in the address of the rows you want to swap and swaps them.
 sort_by_row: 
     # a0 stores the array address, a1 and a2 store the size of row and column respectively
 
+    addiu $sp, $sp, -36
+    sw $ra, 0($sp)
+    sw $s0, 4($sp)
+    sw $s1, 8($sp)
+    sw $s2, 12($sp)
+    sw $s3, 16($sp)
+    sw $s4, 20($sp)
+    sw $s5, 24($sp)
+    sw $s6, 28($sp)
+    sw $s7, 32($sp)
+
+    beqz $a2, end_while
+
+    move $s0, $a0
+    sll $s2, $a2, 2
+    multu $s2, $a2
+    mflo $s1
+    addu $s1, $s0, $s1
+
+    while:
+        li $s3, 0
+        move $s4, $s0
+        addu $s5, $s0, $s2
+        for:
+            beq $s1, $s5, end_for
+
+            move $a0, $s4
+            jal average_row
+            move $s6, $v0
+            move $a0, $s5
+            jal average_row
+            move $s7, $v0
+            
+            slt $t0, $s7, $s6
+            beqz $t0, dont_swap
+            do_swap:
+                move $a0, $s4
+                move $a1, $s5
+                jal swap_rows
+                li $s3, 1
+            dont_swap:
+
+            move $s4, $s5
+            addu $s5, $s2, $s5
+            j for
+        end_for:
+        bnez $s3, while
+    end_while:
+
+    lw $ra, 0($sp)
+    lw $s0, 4($sp)
+    lw $s1, 8($sp)
+    lw $s2, 12($sp)
+    lw $s3, 16($sp)
+    lw $s4, 20($sp)
+    lw $s5, 24($sp)
+    lw $s6, 28($sp)
+    lw $s7, 32($sp)
+    addiu $sp, $sp, 36
+
     # Do not remove this line
     jr $ra
